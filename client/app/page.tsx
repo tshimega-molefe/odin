@@ -1,3 +1,4 @@
+import CamControls from "@/components/cam-controls";
 import { ModeToggle } from "@/components/mode-toggle";
 import Odin from "@/components/odin";
 import OrientationButton from "@/components/orientation-button";
@@ -19,10 +20,12 @@ const HomePage = (props: Props) => {
           <div className="flex flex-col gap-2">
             <ModeToggle />
             <OrientationButton />
-            <Separator />
+            <Separator className="my-2" />
           </div>
           {/* middle */}
           <div className="flex flex-col gap-2">
+            <Separator />
+            <CamControls />
             <Separator />
           </div>
 
