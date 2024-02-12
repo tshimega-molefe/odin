@@ -1,8 +1,11 @@
+import AutoRecord from "@/components/auto-record";
 import CamControls from "@/components/cam-controls";
 import { ModeToggle } from "@/components/mode-toggle";
 import Odin from "@/components/odin";
 import OrientationButton from "@/components/orientation-button";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import VolumeSlider from "@/components/volume-slider";
 
 type Props = {};
 
@@ -24,14 +27,16 @@ const HomePage = (props: Props) => {
           </div>
           {/* middle */}
           <div className="flex flex-col gap-2">
-            <Separator />
+            <Separator className="my-2" />
             <CamControls />
-            <Separator />
+            <Separator className="my-2" />
+            <AutoRecord />
           </div>
 
           {/* bottom */}
           <div className="flex flex-col gap-2">
-            <Separator />
+            <Separator className="my-2" />
+            <VolumeSlider />
           </div>
         </div>
       </div>

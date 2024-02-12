@@ -27,10 +27,8 @@ const CamControls: FC<CamControlsProps> = ({}) => {
   );
   function toggleRecord() {
     if (isRecording) {
-      // If recording, stop recording
       stopRecording(setIsRecording);
     } else {
-      // If not recording, start recording
       startRecording(setIsRecording);
     }
   }
