@@ -1,6 +1,6 @@
 "use client";
 import { FC } from "react";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import {
   Camera,
   FlipHorizontal,
@@ -16,6 +16,7 @@ import {
 } from "@/hooks/store";
 import { Separator } from "./ui/separator";
 import {
+  cn,
   startAutoRecording,
   startRecording,
   stopAutoRecording,
@@ -25,6 +26,7 @@ import { toast } from "sonner";
 import { Rings } from "react-loader-spinner";
 import Socials from "./socials";
 import VolumeSlider from "./volume-slider";
+import Link from "next/link";
 
 interface FeaturesProps {}
 
@@ -112,9 +114,19 @@ const Features: FC<FeaturesProps> = ({}) => {
           <strong>Get in touch 💬 </strong>
           <p>
             Turn this into an&nbsp;
-            <span className="italic underline underline-offset-2">
+            <Link
+              href="https://teksun.com/blog/how-ai-and-iot-are-transforming-smart-homes/"
+              target="_blank"
+              className={cn(
+                buttonVariants({
+                  variant: "link",
+                  size: "sm",
+                }),
+                "text-primary -mx-[0.82rem] italic"
+              )}
+            >
               Embedded Systems Application
-            </span>
+            </Link>
             &nbsp; for homesteads with me.
           </p>
         </li>

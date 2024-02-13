@@ -1,3 +1,4 @@
+import { ObjectDetection } from "@tensorflow-models/coco-ssd";
 import { create } from "zustand";
 
 interface OrientationState {
@@ -16,6 +17,14 @@ interface VolumeState {
   volume: number;
 }
 
+interface ModelState {
+  model: ObjectDetection | undefined;
+}
+
+interface LoadingState {
+  isLoading: boolean;
+}
+
 type OrientationFunctions = {
   setMirrored: (mirrored: boolean) => void;
 };
@@ -32,10 +41,20 @@ type VolumeFunctions = {
   setVolume: (volume: number) => void;
 };
 
+type LoadingFunctions = {
+  setIsLoading: (isLoading: boolean) => void;
+};
+
+type ModelFunctions = {
+  setModel: (model: ObjectDetection) => void;
+};
+
 type OrientationStore = OrientationState & OrientationFunctions;
 type RecordingStore = RecordingState & RecordingFunctions;
 type AutoRecordStore = AutoRecordState & AutoRecordFunctions;
 type VolumeStore = VolumeState & VolumeFunctions;
+type ModelStore = ModelState & ModelFunctions;
+type LoadingStore = LoadingState & LoadingFunctions;
 
 export const useOrientationStore = create<OrientationStore>((set) => ({
   mirrored: false,
@@ -56,4 +75,14 @@ export const useAutoRecordStore = create<AutoRecordStore>((set) => ({
 export const useVolumeStore = create<VolumeStore>((set) => ({
   volume: 0.8,
   setVolume: (volume: number) => set({ volume: volume }),
+}));
+
+export const useModelStore = create<ModelStore>((set) => ({
+  model: undefined,
+  setModel: (model: ObjectDetection) => set({ model: model }),
+}));
+
+export const useLoadingStore = create<LoadingStore>((set) => ({
+  isLoading: false,
+  setIsLoading: (isLoading: boolean) => set({ isLoading: isLoading }),
 }));

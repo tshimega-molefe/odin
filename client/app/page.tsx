@@ -18,8 +18,13 @@ const HomePage = (props: Props) => {
   return (
     <div className="flex h-screen">
       <div className="relative">
-        <div className="relative h-full w-full flex flex-col items-center py-40">
-          <h2 className="font-light italic">Camera Feed</h2>
+        <div className="relative h-full w-full md:w-[45vw] flex flex-col items-center justify-center py-40 px-2">
+          <h2 className="font-light italic max-md:hidden md:flex">
+            Camera Feed
+          </h2>
+          <h2 className="font-light text-xs italic max-md:flex md:hidden my-2">
+            Desktop Preferred...
+          </h2>
           <Odin />
         </div>
       </div>

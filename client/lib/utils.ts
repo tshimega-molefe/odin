@@ -1,21 +1,21 @@
 import { clsx, type ClassValue } from "clsx";
 import { Poppins } from "next/font/google";
-import { twMerge } from "tailwind-merge";
 import { toast } from "sonner";
+import { twMerge } from "tailwind-merge";
 import { audioBase64 } from "./autio";
 
-// =============================Tailwind================================
+// ============================= Tailwind ================================
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// ==============================Fonts===================================
+// ============================== Fonts ===================================
 export const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-// ===========================Helper Functions===========================
+// =========================== Helper Functions ===========================
 export const startRecording = (
   setIsRecording: (isRecording: boolean) => void
 ) => {
@@ -50,3 +50,20 @@ export function beep(volume: number) {
   sound.volume = volume;
   sound.play();
 }
+
+// ============================ Error Handling ============================
+export const getErrorMessage = (error: unknown): string => {
+  let message: string;
+
+  if (error instanceof Error) {
+    message = error.message;
+  } else if (error && typeof error === "object" && "message" in error) {
+    message = String(error.message);
+  } else if (typeof error === "string") {
+    message = error;
+  } else {
+    message = "Something went wrong on the server";
+  }
+
+  return message;
+};
