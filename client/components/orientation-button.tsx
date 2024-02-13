@@ -19,7 +19,7 @@ const OrientationButton: FC<OrientationButtonProps> = ({}) => {
         setMirrored(!mirrored);
       }}
     >
-      <FlipHorizontal size={17} absoluteStrokeWidth={false} />
+      <FlipHorizontal size={14} absoluteStrokeWidth={false} />
     </Button>
   );
 };

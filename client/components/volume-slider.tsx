@@ -15,7 +15,7 @@ const VolumeSlider: FC<VolumeSliderProps> = ({}) => {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="icon">
-          <Volume2 size={17} absoluteStrokeWidth={false} />
+          <Volume2 size={15} absoluteStrokeWidth={false} />
         </Button>
       </PopoverTrigger>
       <PopoverContent>

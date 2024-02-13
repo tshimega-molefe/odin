@@ -14,14 +14,14 @@ const CamControls: FC<CamControlsProps> = ({}) => {
   return (
     <>
       <Button variant="outline" size="icon" onClick={takeScreenshot}>
-        <Camera size={17} absoluteStrokeWidth={false} />
+        <Camera size={14} absoluteStrokeWidth={false} />
       </Button>
       <Button
         variant={isRecording ? "destructive" : "outline"}
         size="icon"
         onClick={toggleRecord}
       >
-        <Video size={17} absoluteStrokeWidth={false} />
+        <Video size={14} absoluteStrokeWidth={false} />
       </Button>
     </>
   );
