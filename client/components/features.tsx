@@ -1,38 +1,32 @@
 "use client";
-import { FC } from "react";
-import { Button, buttonVariants } from "./ui/button";
-import {
-  Camera,
-  FlipHorizontal,
-  MoonIcon,
-  PersonStanding,
-  SunIcon,
-  Video,
-} from "lucide-react";
 import {
   useAutoRecordStore,
-  useOrientationStore,
+  useDisabledStore,
   useRecordingStore,
 } from "@/hooks/store";
-import { Separator } from "./ui/separator";
 import {
   cn,
   startAutoRecording,
   startRecording,
   stopAutoRecording,
   stopRecording,
+  turnOffCamera,
+  turnOnCamera,
 } from "@/lib/utils";
-import { toast } from "sonner";
-import { Rings } from "react-loader-spinner";
-import Socials from "./socials";
-import VolumeSlider from "./volume-slider";
+import { Camera, PersonStanding, Power, Video } from "lucide-react";
 import Link from "next/link";
+import { FC } from "react";
+import { Rings } from "react-loader-spinner";
+import { toast } from "sonner";
+import { Button, buttonVariants } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 interface FeaturesProps {}
 
 const Features: FC<FeaturesProps> = ({}) => {
   const { isRecording, setIsRecording } = useRecordingStore();
   const { autoRecordEnabled, setAutoRecordEnabled } = useAutoRecordStore();
+  const { isDisabled, setIsDisabled } = useDisabledStore();
   return (
     <div className="text-xs text-muted-foreground justify-between h-full md:flex max-md:hidden">
       <ul className="flex flex-col h-full justify-between py-9">
@@ -62,11 +56,23 @@ const Features: FC<FeaturesProps> = ({}) => {
           <p>Manually record video clips as needed.</p>
           <Button
             className="h-6 w-6 my-2"
-            variant={isRecording ? "destructive" : "outline"}
+            variant={isRecording && !isDisabled ? "destructive" : "outline"}
             size="icon"
             onClick={toggleRecord}
           >
             <Video size={14} absoluteStrokeWidth={false} />
+          </Button>
+        </li>
+        <li>
+          <strong>Disable Camera 📸</strong>
+          <p>Toggle the camera on or off.</p>
+          <Button
+            className="h-6 w-6 my-2"
+            variant={isDisabled ? "destructive" : "outline"}
+            size="icon"
+            onClick={toggleCamera}
+          >
+            <Power size={12} absoluteStrokeWidth={false} />
           </Button>
         </li>
         <li>
@@ -76,12 +82,14 @@ const Features: FC<FeaturesProps> = ({}) => {
             required.
           </p>
           <Button
-            className="h-6 w-6 my-2"
-            variant={autoRecordEnabled ? "destructive" : "outline"}
+            className="h-6 w-6 my-2 flex items-center justify-center"
+            variant={
+              autoRecordEnabled && !isDisabled ? "destructive" : "outline"
+            }
             size={"icon"}
             onClick={toggleAutoRecord}
           >
-            {autoRecordEnabled ? (
+            {autoRecordEnabled && !isDisabled ? (
               <Rings
                 visible={true}
                 height="30"
@@ -92,7 +100,7 @@ const Features: FC<FeaturesProps> = ({}) => {
                 wrapperClass=""
               />
             ) : (
-              <PersonStanding size={17} absoluteStrokeWidth={false} />
+              <PersonStanding size={14} absoluteStrokeWidth={false} />
             )}
           </Button>
         </li>
@@ -135,22 +143,42 @@ const Features: FC<FeaturesProps> = ({}) => {
   );
 
   function toggleRecord() {
-    if (isRecording) {
-      stopRecording(setIsRecording);
+    if (!isDisabled) {
+      if (isRecording) {
+        stopRecording(setIsRecording);
+      } else {
+        startRecording(setIsRecording);
+      }
     } else {
-      startRecording(setIsRecording);
+      toast("Please Enable Odin...");
     }
   }
 
   function takeScreenshot() {
-    toast("Took Screenshot");
+    if (isDisabled) {
+      toast("Please Enable Odin...");
+    } else {
+      toast("Took Screenshot");
+    }
   }
 
   function toggleAutoRecord() {
-    if (autoRecordEnabled) {
-      stopAutoRecording(setAutoRecordEnabled);
+    if (!isDisabled) {
+      if (autoRecordEnabled) {
+        stopAutoRecording(setAutoRecordEnabled);
+      } else {
+        startAutoRecording(setAutoRecordEnabled);
+      }
     } else {
-      startAutoRecording(setAutoRecordEnabled);
+      toast("Please Enable Odin...");
+    }
+  }
+
+  function toggleCamera() {
+    if (isDisabled) {
+      turnOnCamera(setIsDisabled);
+    } else {
+      turnOffCamera(setIsDisabled);
     }
   }
 };

@@ -13,6 +13,10 @@ interface AutoRecordState {
   autoRecordEnabled: boolean;
 }
 
+interface DisabledState {
+  isDisabled: boolean;
+}
+
 interface VolumeState {
   volume: number;
 }
@@ -37,6 +41,10 @@ type AutoRecordFunctions = {
   setAutoRecordEnabled: (autoRecordEnabled: boolean) => void;
 };
 
+type DisabledFunctions = {
+  setIsDisabled: (isDisabled: boolean) => void;
+};
+
 type VolumeFunctions = {
   setVolume: (volume: number) => void;
 };
@@ -52,6 +60,7 @@ type ModelFunctions = {
 type OrientationStore = OrientationState & OrientationFunctions;
 type RecordingStore = RecordingState & RecordingFunctions;
 type AutoRecordStore = AutoRecordState & AutoRecordFunctions;
+type DisabledStore = DisabledState & DisabledFunctions;
 type VolumeStore = VolumeState & VolumeFunctions;
 type ModelStore = ModelState & ModelFunctions;
 type LoadingStore = LoadingState & LoadingFunctions;
@@ -70,6 +79,11 @@ export const useAutoRecordStore = create<AutoRecordStore>((set) => ({
   autoRecordEnabled: false,
   setAutoRecordEnabled: (autoRecordEnabled: boolean) =>
     set({ autoRecordEnabled: autoRecordEnabled }),
+}));
+
+export const useDisabledStore = create<DisabledStore>((set) => ({
+  isDisabled: true,
+  setIsDisabled: (isDisabled: boolean) => set({ isDisabled: isDisabled }),
 }));
 
 export const useVolumeStore = create<VolumeStore>((set) => ({

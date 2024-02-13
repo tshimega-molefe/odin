@@ -38,6 +38,16 @@ export const startAutoRecording = (
   toast("Auto Recording Activated...");
 };
 
+export const turnOffCamera = (setIsDisabled: (isDisabled: boolean) => void) => {
+  setIsDisabled(true);
+  toast("Camera Feed Terminated...");
+};
+
+export const turnOnCamera = (setIsDisabled: (isDisabled: boolean) => void) => {
+  setIsDisabled(false);
+  toast("Camera Feed Activated...");
+};
+
 export const stopAutoRecording = (
   setAutoRecordEnabled: (autoRecordEnabled: boolean) => void
 ) => {

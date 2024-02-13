@@ -1,40 +1,70 @@
 "use client";
 import { FC } from "react";
 
-import { useRecordingStore } from "@/hooks/store";
-import { Camera, Video } from "lucide-react";
+import { useDisabledStore, useRecordingStore } from "@/hooks/store";
+import { Camera, Power, PowerSquare, Video } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-import { startRecording, stopRecording } from "@/lib/utils";
+import {
+  startRecording,
+  stopRecording,
+  turnOffCamera,
+  turnOnCamera,
+} from "@/lib/utils";
 
 interface CamControlsProps {}
 
 const CamControls: FC<CamControlsProps> = ({}) => {
   const { isRecording, setIsRecording } = useRecordingStore();
+  const { isDisabled, setIsDisabled } = useDisabledStore();
+
   return (
     <>
       <Button variant="outline" size="icon" onClick={takeScreenshot}>
         <Camera size={14} absoluteStrokeWidth={false} />
       </Button>
       <Button
-        variant={isRecording ? "destructive" : "outline"}
+        variant={isRecording && !isDisabled ? "destructive" : "outline"}
         size="icon"
         onClick={toggleRecord}
       >
         <Video size={14} absoluteStrokeWidth={false} />
       </Button>
+      <Button
+        variant={isDisabled ? "destructive" : "outline"}
+        size="icon"
+        onClick={toggleCamera}
+      >
+        <Power size={14} absoluteStrokeWidth={false} />
+      </Button>
     </>
   );
   function toggleRecord() {
-    if (isRecording) {
-      stopRecording(setIsRecording);
+    if (!isDisabled) {
+      if (isRecording) {
+        stopRecording(setIsRecording);
+      } else {
+        startRecording(setIsRecording);
+      }
     } else {
-      startRecording(setIsRecording);
+      toast("Please Enable Odin...");
     }
   }
 
   function takeScreenshot() {
-    toast("Took Screenshot");
+    if (isDisabled) {
+      toast("Please Enable Odin...");
+    } else {
+      toast("Took Screenshot");
+    }
+  }
+
+  function toggleCamera() {
+    if (isDisabled) {
+      turnOnCamera(setIsDisabled);
+    } else {
+      turnOffCamera(setIsDisabled);
+    }
   }
 };
 

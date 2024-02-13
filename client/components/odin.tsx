@@ -1,5 +1,6 @@
 "use client";
 import {
+  useDisabledStore,
   useLoadingStore,
   useModelStore,
   useOrientationStore,
@@ -17,6 +18,7 @@ import * as cocossd from "@tensorflow-models/coco-ssd";
 import "@tensorflow/tfjs-backend-cpu";
 import "@tensorflow/tfjs-backend-webgl";
 import { Skeleton } from "./ui/skeleton";
+import { truncateSync } from "fs";
 
 interface OdinProps {}
 
@@ -28,6 +30,10 @@ const Odin: FC<OdinProps> = ({}) => {
   const { model, setModel } = useModelStore();
   const { isLoading, setIsLoading } = useLoadingStore();
   const { toast } = useToast();
+
+  // Disabled
+
+  const { isDisabled, setIsDisabled } = useDisabledStore();
 
   // =========================== Tensor Flow Object Detection Model ==========================
   useEffect(() => {
@@ -41,6 +47,7 @@ const Odin: FC<OdinProps> = ({}) => {
         base: "mobilenet_v2",
       });
       setModel(loadedModel);
+      setIsDisabled(false);
     } catch (error: unknown) {
       toast({
         title: "Uh Oh! Something went wrong!",
@@ -59,6 +66,7 @@ const Odin: FC<OdinProps> = ({}) => {
       });
     } else {
       setIsLoading(false);
+      setIsDisabled(false);
     }
   }, [model]);
 
@@ -73,6 +81,12 @@ const Odin: FC<OdinProps> = ({}) => {
         </div>
       </Skeleton>
     </div>
+  ) : isDisabled ? (
+    <p className="mt-8 font-extralight text-base italic text-muted-foreground">
+      Odin is&nbsp;
+      <span className="underline font-normal">disabled</span>
+      ... 🚫
+    </p>
   ) : (
     <div className="w-full md:w-[45vw] p-2 transition-all duration-100 ease-in">
       <Webcam

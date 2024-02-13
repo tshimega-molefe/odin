@@ -1,7 +1,7 @@
 "use client";
 import { FC } from "react";
 import { Button } from "./ui/button";
-import { useAutoRecordStore } from "@/hooks/store";
+import { useAutoRecordStore, useDisabledStore } from "@/hooks/store";
 import { PersonStanding, Video } from "lucide-react";
 import { toast } from "sonner";
 import { startAutoRecording, stopAutoRecording } from "@/lib/utils";
@@ -11,17 +11,19 @@ interface AutoRecordProps {}
 
 const AutoRecord: FC<AutoRecordProps> = ({}) => {
   const { autoRecordEnabled, setAutoRecordEnabled } = useAutoRecordStore();
+  const { isDisabled } = useDisabledStore();
+
   return (
     <Button
-      variant={autoRecordEnabled ? "destructive" : "outline"}
+      variant={autoRecordEnabled && !isDisabled ? "destructive" : "outline"}
       size="icon"
       onClick={toggleAutoRecord}
     >
-      {autoRecordEnabled ? (
+      {autoRecordEnabled && !isDisabled ? (
         <Rings
           visible={true}
-          height="45"
-          width="45"
+          height="38"
+          width="38"
           color="white"
           ariaLabel="puff-loading"
           wrapperStyle={{}}
@@ -33,10 +35,14 @@ const AutoRecord: FC<AutoRecordProps> = ({}) => {
     </Button>
   );
   function toggleAutoRecord() {
-    if (autoRecordEnabled) {
-      stopAutoRecording(setAutoRecordEnabled);
+    if (!isDisabled) {
+      if (autoRecordEnabled) {
+        stopAutoRecording(setAutoRecordEnabled);
+      } else {
+        startAutoRecording(setAutoRecordEnabled);
+      }
     } else {
-      startAutoRecording(setAutoRecordEnabled);
+      toast("Please Enable Odin...");
     }
   }
 };
