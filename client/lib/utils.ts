@@ -107,13 +107,27 @@ export function drawOnCanvas(
 
     if (ctx) {
       ctx.beginPath();
+      ctx.fillStyle = classification === "person" ? "#B0DFF1" : "#FFD700";
+      ctx.globalAlpha = 0.4;
 
-      // styling
+      mirrored
+        ? ctx.roundRect(ctx.canvas.width - x, y, -width, height, 8)
+        : ctx.roundRect(x, y, width, height, 8);
+
+      ctx.fill();
 
       ctx.font = "12px Poppins";
-      ctx.fillStyle = classification === "person" ? "#B0DFF1" : "#FFD700";
+      ctx.fillStyle = "black";
 
-      // draw stroke or fill
+      ctx.globalAlpha = 1;
+
+      mirrored
+        ? ctx.fillText(
+            classification,
+            ctx.canvas.width - x - width + 10,
+            y + 20
+          )
+        : ctx.fillText(classification, x + 10, y + 20);
     }
   });
 }

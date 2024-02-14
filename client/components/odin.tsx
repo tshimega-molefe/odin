@@ -96,11 +96,11 @@ const Odin: FC<OdinProps> = ({ detectionInterval }) => {
     };
 
     // Set up interval
-    detectionInterval = setInterval(runPrediction, 1000);
+    detectionInterval = setInterval(runPrediction, 300);
 
     // Clean up interval on component unmount
     return () => clearInterval(detectionInterval);
-  }, [isDisabled, model, webcamRef.current]);
+  }, [isDisabled, model, webcamRef.current, mirrored]);
 
   return isLoading ? (
     <div className="p-2 md:w-[45vw] w-full h-full rounded-md">
