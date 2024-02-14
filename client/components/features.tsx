@@ -64,7 +64,7 @@ const Features: FC<FeaturesProps> = ({}) => {
           </Button>
         </li>
         <li>
-          <strong>Disable Camera 📸</strong>
+          <strong>Enable/Disable Odin 📸</strong>
           <p>Toggle the camera on or off.</p>
           <Button
             className="h-6 w-6 my-2"

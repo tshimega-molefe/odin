@@ -18,21 +18,20 @@ import * as cocossd from "@tensorflow-models/coco-ssd";
 import "@tensorflow/tfjs-backend-cpu";
 import "@tensorflow/tfjs-backend-webgl";
 import { Skeleton } from "./ui/skeleton";
-import { truncateSync } from "fs";
+import { log } from "console";
 
-interface OdinProps {}
+interface OdinProps {
+  interval: any;
+}
 
-const Odin: FC<OdinProps> = ({}) => {
+const Odin: FC<OdinProps> = ({ interval }) => {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // State
+  const { toast } = useToast();
   const { mirrored } = useOrientationStore();
   const { model, setModel } = useModelStore();
   const { isLoading, setIsLoading } = useLoadingStore();
-  const { toast } = useToast();
-
-  // Disabled
-
   const { isDisabled, setIsDisabled } = useDisabledStore();
 
   // =========================== Tensor Flow Object Detection Model ==========================
@@ -69,6 +68,32 @@ const Odin: FC<OdinProps> = ({}) => {
       setIsDisabled(false);
     }
   }, [model]);
+
+  useEffect(() => {
+    interval = setInterval(() => {
+      try {
+        const runPrediction = async () => {
+          if (
+            model &&
+            webcamRef.current &&
+            webcamRef.current.video?.readyState === 4
+          ) {
+            const predictions = await model.detect(webcamRef.current.video);
+            console.log(predictions);
+          }
+        };
+        runPrediction();
+      } catch (error: unknown) {
+        toast({
+          title: "Uh Oh! Something went wrong!",
+          description: getErrorMessage(error),
+          variant: "destructive",
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [webcamRef.current, model]);
 
   return isLoading ? (
     <div className="p-2 md:w-[45vw] w-full h-full rounded-md">
