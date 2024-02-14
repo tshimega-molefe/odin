@@ -14,7 +14,7 @@ import Link from "next/link";
 
 type Props = {};
 
-let interval: any = null;
+let detectionInterval: any = null;
 
 const HomePage = (props: Props) => {
   return (
@@ -27,7 +27,7 @@ const HomePage = (props: Props) => {
           <h2 className="font-light text-xs italic max-md:flex md:hidden my-2">
             Desktop Preferred...
           </h2>
-          <Odin interval={interval} />
+          <Odin detectionInterval={detectionInterval} />
         </div>
       </div>
       <div className="flex flex-row flex-1">

@@ -11,20 +11,19 @@ import { useToast } from "@/components/ui/use-toast";
 import { ObjectDetection } from "@tensorflow-models/coco-ssd";
 
 import { Loader2 } from "lucide-react";
-import { FC, Suspense, useEffect, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import Webcam from "react-webcam";
 
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import "@tensorflow/tfjs-backend-cpu";
 import "@tensorflow/tfjs-backend-webgl";
 import { Skeleton } from "./ui/skeleton";
-import { log } from "console";
 
 interface OdinProps {
-  interval: any;
+  detectionInterval: any;
 }
 
-const Odin: FC<OdinProps> = ({ interval }) => {
+const Odin: FC<OdinProps> = ({ detectionInterval }) => {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // State
@@ -33,12 +32,6 @@ const Odin: FC<OdinProps> = ({ interval }) => {
   const { model, setModel } = useModelStore();
   const { isLoading, setIsLoading } = useLoadingStore();
   const { isDisabled, setIsDisabled } = useDisabledStore();
-
-  // =========================== Tensor Flow Object Detection Model ==========================
-  useEffect(() => {
-    setIsLoading(true);
-    initialiseModel();
-  }, []);
 
   async function initialiseModel() {
     try {
@@ -54,6 +47,12 @@ const Odin: FC<OdinProps> = ({ interval }) => {
       });
     }
   }
+
+  // =========================== Tensor Flow Object Detection Model ==========================
+  useEffect(() => {
+    setIsLoading(true);
+    initialiseModel();
+  }, []);
 
   useEffect(() => {
     if (!model) {
@@ -90,10 +89,10 @@ const Odin: FC<OdinProps> = ({ interval }) => {
     };
 
     // Set up interval
-    interval = setInterval(runPrediction, 1000);
+    detectionInterval = setInterval(runPrediction, 1000);
 
     // Clean up interval on component unmount
-    return () => clearInterval(interval);
+    return () => clearInterval(detectionInterval);
   }, [isDisabled, model, webcamRef.current]);
 
   return isLoading ? (
