@@ -99,5 +99,21 @@ export function resizeCanvas(
 export function drawOnCanvas(
   mirrored: boolean,
   predictions: DetectedObject[],
-  canvasRef: CanvasRenderingContext2D | null | undefined
-) {}
+  ctx: CanvasRenderingContext2D | null | undefined
+) {
+  predictions.forEach((detectedObject: DetectedObject) => {
+    const { bbox, score, class: classification } = detectedObject;
+    const [x, y, width, height] = bbox;
+
+    if (ctx) {
+      ctx.beginPath();
+
+      // styling
+
+      ctx.font = "12px Poppins";
+      ctx.fillStyle = classification === "person" ? "#B0DFF1" : "#FFD700";
+
+      // draw stroke or fill
+    }
+  });
+}
