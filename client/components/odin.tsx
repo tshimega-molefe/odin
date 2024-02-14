@@ -46,7 +46,6 @@ const Odin: FC<OdinProps> = ({ interval }) => {
         base: "mobilenet_v2",
       });
       setModel(loadedModel);
-      setIsDisabled(false);
     } catch (error: unknown) {
       toast({
         title: "Uh Oh! Something went wrong!",
@@ -70,19 +69,17 @@ const Odin: FC<OdinProps> = ({ interval }) => {
   }, [model]);
 
   useEffect(() => {
-    interval = setInterval(() => {
+    const runPrediction = async () => {
       try {
-        const runPrediction = async () => {
-          if (
-            model &&
-            webcamRef.current &&
-            webcamRef.current.video?.readyState === 4
-          ) {
-            const predictions = await model.detect(webcamRef.current.video);
-            console.log(predictions);
-          }
-        };
-        runPrediction();
+        if (
+          !isDisabled &&
+          model &&
+          webcamRef.current &&
+          webcamRef.current.video?.readyState === 4
+        ) {
+          const predictions = await model.detect(webcamRef.current.video);
+          console.log(predictions);
+        }
       } catch (error: unknown) {
         toast({
           title: "Uh Oh! Something went wrong!",
@@ -90,10 +87,14 @@ const Odin: FC<OdinProps> = ({ interval }) => {
           variant: "destructive",
         });
       }
-    }, 1000);
+    };
 
+    // Set up interval
+    interval = setInterval(runPrediction, 1000);
+
+    // Clean up interval on component unmount
     return () => clearInterval(interval);
-  }, [webcamRef.current, model]);
+  }, [isDisabled, model, webcamRef.current]);
 
   return isLoading ? (
     <div className="p-2 md:w-[45vw] w-full h-full rounded-md">
