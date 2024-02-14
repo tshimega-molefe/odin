@@ -5,13 +5,13 @@ import {
   useModelStore,
   useOrientationStore,
 } from "@/hooks/store";
-import { getErrorMessage } from "@/lib/utils";
+import { drawOnCanvas, getErrorMessage, resizeCanvas } from "@/lib/utils";
 
 import { useToast } from "@/components/ui/use-toast";
-import { ObjectDetection } from "@tensorflow-models/coco-ssd";
+import { DetectedObject, ObjectDetection } from "@tensorflow-models/coco-ssd";
 
 import { Loader2 } from "lucide-react";
-import { FC, useEffect, useRef } from "react";
+import { FC, RefObject, useEffect, useRef } from "react";
 import Webcam from "react-webcam";
 
 import * as cocossd from "@tensorflow-models/coco-ssd";
@@ -76,8 +76,15 @@ const Odin: FC<OdinProps> = ({ detectionInterval }) => {
           webcamRef.current &&
           webcamRef.current.video?.readyState === 4
         ) {
-          const predictions = await model.detect(webcamRef.current.video);
-          console.log(predictions);
+          const predictions: DetectedObject[] = await model.detect(
+            webcamRef.current.video
+          );
+          resizeCanvas(canvasRef, webcamRef);
+          drawOnCanvas(
+            mirrored,
+            predictions,
+            canvasRef.current?.getContext("2d")
+          );
         }
       } catch (error: unknown) {
         toast({

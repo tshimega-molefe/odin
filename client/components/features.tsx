@@ -20,6 +20,7 @@ import { Rings } from "react-loader-spinner";
 import { toast } from "sonner";
 import { Button, buttonVariants } from "./ui/button";
 import { Separator } from "./ui/separator";
+import { useLoadingStore } from "../hooks/store";
 
 interface FeaturesProps {}
 
@@ -27,6 +28,7 @@ const Features: FC<FeaturesProps> = ({}) => {
   const { isRecording, setIsRecording } = useRecordingStore();
   const { autoRecordEnabled, setAutoRecordEnabled } = useAutoRecordStore();
   const { isDisabled, setIsDisabled } = useDisabledStore();
+  const { isLoading } = useLoadingStore();
   return (
     <div className="text-xs text-muted-foreground justify-between h-full md:flex max-md:hidden">
       <ul className="flex flex-col h-full justify-between py-9">
@@ -71,6 +73,7 @@ const Features: FC<FeaturesProps> = ({}) => {
             variant={isDisabled ? "destructive" : "outline"}
             size="icon"
             onClick={toggleCamera}
+            disabled={isLoading}
           >
             <Power size={12} absoluteStrokeWidth={false} />
           </Button>

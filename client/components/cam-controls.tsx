@@ -1,7 +1,11 @@
 "use client";
 import { FC } from "react";
 
-import { useDisabledStore, useRecordingStore } from "@/hooks/store";
+import {
+  useDisabledStore,
+  useLoadingStore,
+  useRecordingStore,
+} from "@/hooks/store";
 import { Camera, Power, PowerSquare, Video } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
@@ -17,6 +21,7 @@ interface CamControlsProps {}
 const CamControls: FC<CamControlsProps> = ({}) => {
   const { isRecording, setIsRecording } = useRecordingStore();
   const { isDisabled, setIsDisabled } = useDisabledStore();
+  const { isLoading } = useLoadingStore();
 
   return (
     <>
@@ -34,6 +39,7 @@ const CamControls: FC<CamControlsProps> = ({}) => {
         variant={isDisabled ? "destructive" : "outline"}
         size="icon"
         onClick={toggleCamera}
+        disabled={isLoading}
       >
         <Power size={14} absoluteStrokeWidth={false} />
       </Button>
