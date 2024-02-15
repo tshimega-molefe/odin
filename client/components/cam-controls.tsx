@@ -1,5 +1,5 @@
 "use client";
-import { FC } from "react";
+import { FC, MutableRefObject, RefObject } from "react";
 
 import {
   useDisabledStore,
@@ -15,10 +15,14 @@ import {
   turnOffCamera,
   turnOnCamera,
 } from "@/lib/utils";
+import Webcam from "react-webcam";
 
-interface CamControlsProps {}
+interface CamControlsProps {
+  webcamRef: RefObject<Webcam>;
+  mediaRecorderRef: MutableRefObject<MediaRecorder | null>;
+}
 
-const CamControls: FC<CamControlsProps> = ({}) => {
+const CamControls: FC<CamControlsProps> = ({ webcamRef, mediaRecorderRef }) => {
   const { isRecording, setIsRecording } = useRecordingStore();
   const { isDisabled, setIsDisabled } = useDisabledStore();
   const { isLoading } = useLoadingStore();

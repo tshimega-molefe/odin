@@ -5,26 +5,38 @@ import {
   useModelStore,
   useOrientationStore,
 } from "@/hooks/store";
-import { drawOnCanvas, getErrorMessage, resizeCanvas } from "@/lib/utils";
+import {
+  drawOnCanvas,
+  getErrorMessage,
+  resizeCanvas,
+  startRecording,
+  stopRecording,
+} from "@/lib/utils";
 
 import { useToast } from "@/components/ui/use-toast";
 import { DetectedObject, ObjectDetection } from "@tensorflow-models/coco-ssd";
 
 import { Loader2 } from "lucide-react";
-import { FC, RefObject, useEffect, useRef } from "react";
+import { FC, MutableRefObject, RefObject, useEffect, useRef } from "react";
 import Webcam from "react-webcam";
 
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import "@tensorflow/tfjs-backend-cpu";
 import "@tensorflow/tfjs-backend-webgl";
+import { useRecordingStore } from "../hooks/store";
 import { Skeleton } from "./ui/skeleton";
 
 interface OdinProps {
   detectionInterval: any;
+  webcamRef: RefObject<Webcam>;
+  mediaRecorderRef: MutableRefObject<MediaRecorder | null>;
 }
 
-const Odin: FC<OdinProps> = ({ detectionInterval }) => {
-  const webcamRef = useRef<Webcam>(null);
+const Odin: FC<OdinProps> = ({
+  detectionInterval,
+  webcamRef,
+  mediaRecorderRef,
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // State
   const { toast } = useToast();
@@ -32,6 +44,7 @@ const Odin: FC<OdinProps> = ({ detectionInterval }) => {
   const { model, setModel } = useModelStore();
   const { isLoading, setIsLoading } = useLoadingStore();
   const { isDisabled, setIsDisabled } = useDisabledStore();
+  const { setIsRecording } = useRecordingStore();
 
   async function initialiseModel() {
     try {
@@ -47,6 +60,50 @@ const Odin: FC<OdinProps> = ({ detectionInterval }) => {
       });
     }
   }
+
+  function formatDate(d: Date) {
+    const formattedDate =
+      [
+        (d.getMonth() + 1).toString().padStart(2, "0"),
+        d.getDate().toString().padStart(2, "0"),
+        d.getFullYear(),
+      ].join("-") +
+      " " +
+      [
+        d.getHours().toString().padStart(2, "0"),
+        d.getMinutes().toString().padStart(2, "0"),
+        d.getSeconds().toString().padStart(2, "0"),
+      ].join("-");
+    return formattedDate;
+  }
+
+  // Initialise Media Recorder
+  useEffect(() => {
+    if (!isDisabled && webcamRef && webcamRef.current) {
+      const stream = (webcamRef.current.video as any).captureStream();
+      if (stream) {
+        mediaRecorderRef.current = new MediaRecorder(stream);
+
+        mediaRecorderRef.current.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            const recordedBlob = new Blob([e.data], { type: "video/mp4" });
+            const videoURL = URL.createObjectURL(recordedBlob);
+
+            const a = document.createElement("a");
+            a.href = videoURL;
+            a.download = `${formatDate(new Date())}.webm`;
+            a.click();
+          }
+        };
+        mediaRecorderRef.current.onstart = () => {
+          startRecording(setIsRecording);
+        };
+        mediaRecorderRef.current.onstop = () => {
+          stopRecording(setIsRecording);
+        };
+      }
+    }
+  }, [isDisabled, webcamRef]);
 
   // =========================== Tensor Flow Object Detection Model ==========================
   useEffect(() => {

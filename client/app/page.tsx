@@ -1,3 +1,4 @@
+"use client";
 import AutoRecord from "@/components/auto-record";
 import CamControls from "@/components/cam-controls";
 import Features from "@/components/features";
@@ -11,12 +12,17 @@ import VolumeSlider from "@/components/volume-slider";
 import { cn } from "@/lib/utils";
 import { Phone } from "lucide-react";
 import Link from "next/link";
+import { useRef } from "react";
+import Webcam from "react-webcam";
 
 type Props = {};
 
 let detectionInterval: any = null;
 
 const HomePage = (props: Props) => {
+  const webcamRef = useRef<Webcam>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+
   return (
     <div className="flex h-screen">
       <div className="relative">
@@ -27,7 +33,11 @@ const HomePage = (props: Props) => {
           <h2 className="font-light text-xs italic max-md:flex md:hidden my-2">
             Desktop Preferred...
           </h2>
-          <Odin detectionInterval={detectionInterval} />
+          <Odin
+            detectionInterval={detectionInterval}
+            mediaRecorderRef={mediaRecorderRef}
+            webcamRef={webcamRef}
+          />
         </div>
       </div>
       <div className="flex flex-row flex-1">
@@ -41,7 +51,10 @@ const HomePage = (props: Props) => {
           {/* middle */}
           <div className="flex flex-col gap-2">
             <Separator className="my-2" />
-            <CamControls />
+            <CamControls
+              mediaRecorderRef={mediaRecorderRef}
+              webcamRef={webcamRef}
+            />
             <AutoRecord />
             <VolumeSlider />
             <Separator className="my-2" />
